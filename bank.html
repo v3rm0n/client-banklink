@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pangalink</title>
+		<link type="text/css" rel="stylesheet" href="https://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-combined.min.css"></link>
+		<script type="text/javascript" src="js/rsasign/jsbn.js"></script>
+		<script type="text/javascript" src="js/rsasign/jsbn2.js"></script>
+		<script type="text/javascript" src="js/rsasign/rsa.js"></script>
+		<script type="text/javascript" src="js/rsasign/rsa2.js"></script>
+		
+		<script type="text/javascript" src="js/rsasign/sha1.js"></script>
+		<script type="text/javascript" src="js/rsasign/sha256.js"></script>
+		<script type="text/javascript" src="js/rsasign/sha512.js"></script>
+		<script type="text/javascript" src="js/rsasign/md5.js"></script>
+		<script type="text/javascript" src="js/rsasign/ripemd160.js"></script>
+		<script type="text/javascript" src="js/rsasign/base64.js"></script>
+		
+		<script type="text/javascript" src="js/rsasign/rsapem-1.1.min.js"></script>
+		<script type="text/javascript" src="js/rsasign/rsasign-1.2.min.js"></script>
+		<script type="text/javascript" src="js/rsasign/asn1hex-1.1.min.js"></script>
+		<script type="text/javascript" src="js/rsasign/x509-1.1.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/scripts.js"></script>
+		<script type="text/javascript">
+			//Initialize
+			$(function(){
+				//Initialize packet from request
+				request = Packet.init();
+				//Create table with packet parameters
+				$("#request").html(request.html());
+				var params = [];
+				response = new Packet("3003",params);
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="span4 offset4">
+				<form id="bankForm" class="form-horizontal" method="POST">
+					<fieldset>
+						<legend>Pangalink</legend>
+						<div class="control-group">
+							<label class="control-label" for="firstname">Isikukood</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="firstname" name="field1" value="35403040276">
+								<p class="help-block">Isikukood</p>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="firstname">Eesnimi</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="firstname" name="field1" value="Aadu">
+								<p class="help-block">Sisesta oma eesnimi</p>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="lastname">Perenimi</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="lastname" name="field2" value="Kadakas">
+								<p class="help-block">Sisesta oma perenimi</p>
+							</div>
+						</div>
+						<div class="form-actions">
+							<button type="submit" class="btn btn-primary">Sisene</button>
+							<button type="reset" class="btn">Katkesta</button>
+						</div>
+					</fieldset>
+				</form>
+				<div id="request"></div>
+			</div>
+		</div>
+	</body>
+</html>
+
