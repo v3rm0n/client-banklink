@@ -29,6 +29,12 @@
 				request = Packet.init();
 				//Create table with packet parameters
 				$("#request").html(request.html());
+				if(request.verify()){
+					$("#bankForm").append("<div class='alert alert-success'>Verification successful!</div>");
+				}
+				else {
+					$("#bankForm").append("<div class='alert alert-error'>Verification failed!</div>");
+				}
 				var params = [];
 				response = new Packet("3003",params);
 			});
