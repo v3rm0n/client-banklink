@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Pangalink</title>
+		<meta charset="UTF-8" />
 		<link type="text/css" rel="stylesheet" href="https://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-combined.min.css"></link>
 		<script type="text/javascript" src="js/rsasign/jsbn.js"></script>
 		<script type="text/javascript" src="js/rsasign/jsbn2.js"></script>
@@ -29,51 +30,64 @@
 				request = Packet.init();
 				//Create table with packet parameters
 				$("#request").html(request.html());
+				//Verfiy request packet
 				if(request.verify()){
-					$("#bankForm").append("<div class='alert alert-success'>Verification successful!</div>");
+					//Create response packet
+					var params = [];
+					response = new Packet("3003",params);
+					//Change form action
+					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
 				}
 				else {
 					$("#bankForm").append("<div class='alert alert-error'>Verification failed!</div>");
 				}
-				var params = [];
-				response = new Packet("3003",params);
 			});
 		</script>
 	</head>
 	<body>
 		<div class="container-fluid">
-			<div class="span4 offset4">
-				<form id="bankForm" class="form-horizontal" method="POST">
-					<fieldset>
-						<legend>Pangalink</legend>
-						<div class="control-group">
-							<label class="control-label" for="firstname">Isikukood</label>
-							<div class="controls">
-								<input type="text" class="input-xlarge" id="firstname" name="field1" value="35403040276">
-								<p class="help-block">Isikukood</p>
+			<div class="row-fluid">
+				<div class="span4">&nbsp;</div>
+				<div class="span4">
+					<form id="bankForm" class="form-horizontal" method="POST">
+						<fieldset>
+							<legend>Pangalink</legend>
+							<div class="control-group">
+								<label class="control-label" for="firstname">Isikukood</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="firstname" name="field1" value="35403040276">
+									<p class="help-block">Isikukood</p>
+								</div>
 							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" for="firstname">Eesnimi</label>
-							<div class="controls">
-								<input type="text" class="input-xlarge" id="firstname" name="field1" value="Aadu">
-								<p class="help-block">Sisesta oma eesnimi</p>
+							<div class="control-group">
+								<label class="control-label" for="firstname">Eesnimi</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="firstname" name="field1" value="Aadu">
+									<p class="help-block">Sisesta oma eesnimi</p>
+								</div>
 							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" for="lastname">Perenimi</label>
-							<div class="controls">
-								<input type="text" class="input-xlarge" id="lastname" name="field2" value="Kadakas">
-								<p class="help-block">Sisesta oma perenimi</p>
+							<div class="control-group">
+								<label class="control-label" for="lastname">Perenimi</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="lastname" name="field2" value="Kadakas">
+									<p class="help-block">Sisesta oma perenimi</p>
+								</div>
 							</div>
-						</div>
-						<div class="form-actions">
-							<button type="submit" class="btn btn-primary">Sisene</button>
-							<button type="reset" class="btn">Katkesta</button>
-						</div>
-					</fieldset>
-				</form>
-				<div id="request"></div>
+							<div class="form-actions">
+								<button type="submit" class="btn btn-primary">Sisene</button>
+								<a href="#paramsModal" data-toggle="modal" class="btn btn-inverse">Parameetrid</a>
+							</div>
+						</fieldset>
+					</form>
+					<div class="modal hide" id="paramsModal">
+					  <div class="modal-header">
+					    <button type="button" class="close" data-dismiss="modal">×</button>
+					    <h3>Parameetrid</h3>
+					  </div>
+					  <div class="modal-body" id="request">
+					  </div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>

@@ -41,9 +41,11 @@ Packet.prototype.verify = function(){
 	return x509.subjectPublicKeyRSA.verifyString(this.toMac(), this.getParam("VK_MAC"));
 }
 Packet.prototype.html = function(){
-	var 	result = "<table class='table table-bordered table-striped'><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>";
-		for(param in this.parameters)
-			result += "<tr><td>"+param+"</td><td>"+this.parameters[param]+"</td></tr>";
+	var 	result = "<table class='table table-bordered table-striped'><thead><tr><th>Parameeter</th><th>Väärtus</th></tr></thead><tbody>";
+		for(param in this.parameters) {
+			if(param != "VK_MAC")
+				result += "<tr><td>"+param+"</td><td>"+this.parameters[param]+"</td></tr>";
+		}
 		result += "</tbody></table>";
 	return	result;
 }

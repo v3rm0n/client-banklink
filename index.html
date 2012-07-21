@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<title>Pangalingi test</title>
+		<meta charset="UTF-8" />
+		<link type="text/css" rel="stylesheet" href="https://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-combined.min.css"></link>
 		<script type="text/javascript" src="js/rsasign/jsbn.js"></script>
 		<script type="text/javascript" src="js/rsasign/jsbn2.js"></script>
 		<script type="text/javascript" src="js/rsasign/rsa.js"></script>
@@ -19,6 +21,7 @@
 		<script type="text/javascript" src="js/rsasign/asn1hex-1.1.min.js"></script>
 		<script type="text/javascript" src="js/rsasign/x509-1.1.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/scripts.js"></script>
 		<script type="text/javascript">
 			$(function(){
@@ -34,10 +37,19 @@
 				$("#goToBank").click(function(){
 					$(this).attr("href", "bank.html"+request.queryString());
 				});
+				var response = Packet.init();
+				i
 			});
 		</script>
 	<head>
 	<body>
-		<a id="goToBank" href="#">Mine panka</a>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span4">&nbsp;</div>
+				<div class="span4">
+					<a id="goToBank" class="btn btn-primary btn-large" href="#">Mine panka</a>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
