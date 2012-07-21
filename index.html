@@ -23,22 +23,23 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript" src="https://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/scripts.js"></script>
+		<script type="text/javascript" src="js/seb.js"></script>
 		<script type="text/javascript">
 			$(function(){
-				var params = [];
-				params["VK_SERVICE"] = "4001";
-				params["VK_VERSION"] = "008";
-				params["VK_SND_ID"] = "TEST";
-				params["VK_REPLY"] = "3002";
-				params["VK_RETURN"] = "index.html";
-				params["VK_DATE"] = "20.07.2012";
-				params["VK_TIME"] = "21:45:57";
-				var request = new Packet("4001",params);
+				request = new Packet4001();
+				request.setParam("VK_SND_ID","TEST");
+				request.setParam("VK_RETURN","index.html");
+				var now = new Date();
+				var d = now.getDate();
+				var m = now.getMonth()+1;
+				var y = now.getFullYear();
+				request.setParam("VK_DATE",(d<10?"0"+d:d)+":"+(m<10?"0"+m:m)+":"+y);
+				var min = now.getMinutes();
+				var s = now.getSeconds();
+				request.setParam("VK_TIME",(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
 				$("#goToBank").click(function(){
 					$(this).attr("href", "bank.html"+request.queryString());
 				});
-				var response = Packet.init();
-				i
 			});
 		</script>
 	<head>

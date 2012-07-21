@@ -23,6 +23,7 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript" src="https://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/scripts.js"></script>
+		<script type="text/javascript" src="js/seb.js"></script>
 		<script type="text/javascript">
 			//Initialize
 			$(function(){
@@ -31,16 +32,13 @@
 				//Create table with packet parameters
 				$("#request").html(request.html());
 				//Verfiy request packet
-				if(request.verify()){
-					//Create response packet
-					var params = [];
-					response = new Packet("3003",params);
-					//Change form action
-					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
-				}
-				else {
+				if(!request.verify()){
 					$("#bankForm").append("<div class='alert alert-error'>Verification failed!</div>");
 				}
+				$("#bankForm").submit(function(){
+					var response = request.response($("#firstname").val(),$("#lastname").val(),$("#idcode").val());
+					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+				});
 			});
 		</script>
 	</head>
@@ -53,23 +51,23 @@
 						<fieldset>
 							<legend>Pangalink</legend>
 							<div class="control-group">
-								<label class="control-label" for="firstname">Isikukood</label>
+								<label class="control-label" for="idcode">Isikukood</label>
 								<div class="controls">
-									<input type="text" class="input-xlarge" id="firstname" name="field1" value="35403040276">
+									<input type="text" class="input-xlarge" id="idcode" name="idcode" value="35403040276">
 									<p class="help-block">Isikukood</p>
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="firstname">Eesnimi</label>
 								<div class="controls">
-									<input type="text" class="input-xlarge" id="firstname" name="field1" value="Aadu">
+									<input type="text" class="input-xlarge" id="firstname" name="first name" value="Aadu">
 									<p class="help-block">Sisesta oma eesnimi</p>
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label" for="lastname">Perenimi</label>
 								<div class="controls">
-									<input type="text" class="input-xlarge" id="lastname" name="field2" value="Kadakas">
+									<input type="text" class="input-xlarge" id="lastname" name="last name" value="Kadakas">
 									<p class="help-block">Sisesta oma perenimi</p>
 								</div>
 							</div>
