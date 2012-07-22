@@ -26,28 +26,40 @@
 		<script type="text/javascript" src="js/swed.js"></script>
 		<script type="text/javascript">
 			$(function(){
-				//Create new auth request packet
-				request = new Packet4001();
-				request.setParam("VK_SND_ID","TEST");
-				request.setParam("VK_RETURN","../index.html");
-				var now = new Date();
-				var d = now.getDate();
-				var m = now.getMonth()+1;
-				var y = now.getFullYear();
-				request.setParam("VK_DATE",(d<10?"0"+d:d)+"."+(m<10?"0"+m:m)+"."+y);
-				var h = now.getHours();
-				var min = now.getMinutes();
-				var s = now.getSeconds();
-				request.setParam("VK_TIME",(h<10?"0"+h:h)+":"+(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
-				$("#goToBank").click(function(){
+				$("#authBtn").click(function(){
+					//Create new auth request packet
+					var request = new Packet4001();
+					request.setParam("VK_SND_ID","TEST");
+					request.setParam("VK_RETURN","../index.html");
+					var now = new Date();
+					var d = now.getDate();
+					var m = now.getMonth()+1;
+					var y = now.getFullYear();
+					request.setParam("VK_DATE",(d<10?"0"+d:d)+"."+(m<10?"0"+m:m)+"."+y);
+					var h = now.getHours();
+					var min = now.getMinutes();
+					var s = now.getSeconds();
+					request.setParam("VK_TIME",(h<10?"0"+h:h)+":"+(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
 					$(this).attr("href", "auth/swed.html"+request.queryString());
 				});
+				$("#paymentBtn").click(function(){
+					//Create new payment request packet
+					var request = new Packet1001();
+					request.setParam("VK_SND_ID","TEST");
+					request.setParam("VK_RETURN","../index.html");
+					request.setParam("VK_AMOUNT", $("#amount").val());
+					$(this).attr("href", "payment/swed.html"+request.queryString());
+				});
 				//Read packet from request
-				var response = Packet.init();
+				response = Packet.init();
 				if(response != null){
-					console.log("Got response from bank");
 					if(response.verify()){
-						alert("Tere tulemast "+response.getParam("VK_INFO"));
+						if(response instanceof Packet1101){
+							alert("Makse õnnestus summas "+response.getParam("VK_AMOUNT"));
+						}
+						else{
+							alert("Tere tulemast "+response.getParam("VK_INFO"));
+						}
 					}
 					else{
 						alert("Midagi läks nihu!");
@@ -61,7 +73,22 @@
 			<div class="row-fluid">
 				<div class="span4">&nbsp;</div>
 				<div class="span4">
-					<a id="goToBank" class="btn btn-primary btn-large" href="#">Mine panka</a>
+					<form id="bankForm" class="form-horizontal" method="POST">
+						<fieldset>
+							<legend>Autentimise ja maksmise test</legend>
+							<div class="control-group">
+								<label class="control-label" for="amount">Summa</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="amount" name="amount" value="10.50">
+									<p class="help-block">Sisesta summa kui tahad maksta</p>
+								</div>
+							</div>
+							<div class="form-actions">
+								<a id="paymentBtn" class="btn btn-primary" href="#">Maksa</a>
+								<a id="authBtn" class="btn btn-primary" href="#">Autendi</a>
+							</div>
+						</fieldset>
+					</form>
 				</div>
 			</div>
 		</div>

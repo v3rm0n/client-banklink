@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Swedbanki autentimine</title>
+		<title>Swedbanki makse</title>
 		<meta charset="UTF-8" />
 		<link type="text/css" rel="stylesheet" href="https://current.bootstrapcdn.com/bootstrap-v204/css/bootstrap-combined.min.css"></link>
 		<script type="text/javascript" src="../js/rsasign/jsbn.js"></script>
@@ -28,17 +28,38 @@
 			//Initialize
 			$(function(){
 				//Initialize packet from request
-				request = Packet.init();
+				var request = Packet.init();
 				//Create table with packet parameters
 				$("#request").html(request.html());
 				//Verfiy request packet
 				if(!request.verify()){
 					$("#bankForm").append("<div class='alert alert-error'>Verification failed!</div>");
 				}
-				$("#bankForm").submit(function(){
-					var response = request.response($("#firstname").val(),$("#lastname").val(),$("#idcode").val());
+				else{
+					$("#sum").html(request.getParam("VK_AMOUNT"));
+				}
+				//Ordinary payment response
+				$("#payButton").click(function(){
+					var response = request.response(true,false);
+					$("#bankForm").attr("target", "_self"); 
 					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					$("#bankForm").submit();
 				});
+				//Payment auto response
+				$("#autoButton").click(function(){
+						var response = request.response(true,true);
+						$("#bankForm").attr("target", "_blank"); 
+						$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+						$("#bankForm").submit();
+				});
+				//Payment failed response
+				$("#cancelButton").click(function(){
+					var response = request.response(false,false);
+					$("#bankForm").attr("target", "_self"); 
+					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					$("#bankForm").submit();
+				});
+				$('.btn-tooltip').tooltip();
 			});
 		</script>
 	</head>
@@ -49,30 +70,18 @@
 				<div class="span4">
 					<form id="bankForm" class="form-horizontal" method="POST">
 						<fieldset>
-							<legend>Swedbanki autentimine <a href="#paramsModal" data-toggle="modal" class="btn btn-inverse btn-mini">Parameetrid</a></legend>
+							<legend>Swedbanki makse <a href="#paramsModal" data-toggle="modal" class="btn btn-inverse btn-mini">Parameetrid</a></legend>
 							<div class="control-group">
-								<label class="control-label" for="idcode">Isikukood</label>
+								<label class="control-label" for="firstname">Summa</label>
 								<div class="controls">
-									<input type="text" class="input-xlarge" id="idcode" name="idcode" value="35403040276">
-									<p class="help-block">Isikukood</p>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="firstname">Eesnimi</label>
-								<div class="controls">
-									<input type="text" class="input-xlarge" id="firstname" name="firstname" value="Aadu">
-									<p class="help-block">Sisesta oma eesnimi</p>
-								</div>
-							</div>
-							<div class="control-group">
-								<label class="control-label" for="lastname">Perenimi</label>
-								<div class="controls">
-									<input type="text" class="input-xlarge" id="lastname" name="lastname" value="Kadakas">
-									<p class="help-block">Sisesta oma perenimi</p>
+									<span id="sum" class="input-xlarge uneditable-input">0.00</span>
+									<p class="help-block">Maksmisele kuuluv summa</p>
 								</div>
 							</div>
 							<div class="form-actions">
-								<button type="submit" class="btn btn-primary">Sisene</button>
+								<button type="button" id="payButton" class="btn btn-primary btn-tooltip" title="Saadab müüale õnnestunud makse vastuse">Maksa</button>
+								<button type="button" id="autoButton" class="btn btn-tooltip" title="Emuleerib VK_AUTO='Y' vastest">Auto</button>
+								<button type="button" id="cancelButton" class="btn btn-danger btn-tooltip" title="Saadab müüjale ebaõnnestunud makse vastuse">Katkesta</button>
 							</div>
 						</fieldset>
 					</form>

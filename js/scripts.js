@@ -18,9 +18,13 @@ function Packet(packetId, parameters){
 }
 Packet.prototype.setParam = function(paramName, paramValue){
 	for(i=0;i<this.parameters.length;i++){
-		if(this.parameters[i].name == paramName){
-			this.parameters[i].value = $.trim(paramValue);
-			return;
+		var param = this.parameters[i];
+		if(param.name == paramName){
+			if(paramValue.length <= param.length){
+				param.value = $.trim(paramValue);
+				return;
+			}
+			alert("Parameter "+param.name+" value too long!["+paramValue.length+","+param.length+"]");
 		}
 	}
 	alert("Parameter "+paramName+" doesn't exist!");
