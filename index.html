@@ -23,23 +23,36 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript" src="https://current.bootstrapcdn.com/bootstrap-v204/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/scripts.js"></script>
-		<script type="text/javascript" src="js/seb.js"></script>
+		<script type="text/javascript" src="js/swed.js"></script>
 		<script type="text/javascript">
 			$(function(){
+				//Create new auth request packet
 				request = new Packet4001();
 				request.setParam("VK_SND_ID","TEST");
-				request.setParam("VK_RETURN","index.html");
+				request.setParam("VK_RETURN","../index.html");
 				var now = new Date();
 				var d = now.getDate();
 				var m = now.getMonth()+1;
 				var y = now.getFullYear();
-				request.setParam("VK_DATE",(d<10?"0"+d:d)+":"+(m<10?"0"+m:m)+":"+y);
+				request.setParam("VK_DATE",(d<10?"0"+d:d)+"."+(m<10?"0"+m:m)+"."+y);
+				var h = now.getHours();
 				var min = now.getMinutes();
 				var s = now.getSeconds();
-				request.setParam("VK_TIME",(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
+				request.setParam("VK_TIME",(h<10?"0"+h:h)+":"+(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
 				$("#goToBank").click(function(){
-					$(this).attr("href", "bank.html"+request.queryString());
+					$(this).attr("href", "auth/swed.html"+request.queryString());
 				});
+				//Read packet from request
+				var response = Packet.init();
+				if(response != null){
+					console.log("Got response from bank");
+					if(response.verify()){
+						alert("Tere tulemast "+response.getParam("VK_INFO"));
+					}
+					else{
+						alert("Midagi läks nihu!");
+					}
+				}
 			});
 		</script>
 	<head>

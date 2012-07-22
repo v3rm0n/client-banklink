@@ -1,3 +1,15 @@
+//Define console log function if not exists
+console = console || {log: function(){}};
+//Add format method to String so we can do printf
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};
 //Classes
 //Packet
 function Packet(packetId, parameters){
@@ -7,7 +19,7 @@ function Packet(packetId, parameters){
 Packet.prototype.setParam = function(paramName, paramValue){
 	for(i=0;i<this.parameters.length;i++){
 		if(this.parameters[i].name == paramName){
-			this.parameters[i].value = paramValue;
+			this.parameters[i].value = $.trim(paramValue);
 			return;
 		}
 	}
@@ -50,13 +62,16 @@ Packet.prototype.sign = function(){
 	var rsa = new RSAKey();
 	rsa.readPrivateKeyFromPEMString(MERCHANT_PRIVATE_KEY);
 	var signature = rsa.signString(this.toMac(), "sha1");
-	this.setParam("VK_MAC", signature);
+	var b64 = hex2b64(signature);
+	this.setParam("VK_MAC", encodeURIComponent(b64));
 }
 //Verifiy request parameters
 Packet.prototype.verify = function(){
 	var x509 = new X509();
 	x509.readCertPEM(MERCHANT_CERT);
-	return x509.subjectPublicKeyRSA.verifyString(this.toMac(), this.getParam("VK_MAC"));
+	var mac = decodeURIComponent(this.getParam("VK_MAC"));
+	var signature = b64tohex(mac);
+	return x509.subjectPublicKeyRSA.verifyString(this.toMac(), signature);
 }
 Packet.prototype.html = function(){
 	var result = "<table class='table table-bordered table-striped'><thead><tr><th>Parameeter</th><th>Väärtus</th></tr></thead><tbody>";
@@ -88,13 +103,12 @@ Packet.init = function(){
 	while (match = search.exec(query))
 		urlParams[decode(match[1])] = decode(match[2]);
 	var packet;
-	switch(urlParams["VK_SERVICE"]){
-		case "4001":
-			packet = new Packet4001();
-			break;
-		default:
-			alert("Packet for service "+urlParams["VK_SERVICE"]+" not found!");
+	if(urlParams["VK_SERVICE"] != undefined){
+		eval("packet = new Packet"+urlParams["VK_SERVICE"]+"();");
 	}
+	else{
+		return null;
+	} 
 	for(param in urlParams){
 		if(param.indexOf("VK_") == 0)
 			packet.setParam(param, urlParams[param]);
@@ -102,7 +116,8 @@ Packet.init = function(){
 	return packet;
 }
 //RequestPacket
-RequestPacket.prototype = Packet.prototype;
+RequestPacket.prototype = new Packet();
+RequestPacket.prototype.constructor = RequestPacket;
 function RequestPacket(packetId,parameters){
 	Packet.call(packetId,parameters);
 	this.packetId = packetId;
@@ -119,7 +134,8 @@ RequestPacket.prototype.response = function(firstName, lastName, idCode){
 	alert("Not implemented!");
 }
 //Response packet
-ResponsePacket.prototype = Packet.prototype;
+ResponsePacket.prototype = new Packet();
+ResponsePacket.prototype.constructor = ResponsePacket;
 function ResponsePacket(packetId, parameters){
 	Packet.call(packetId,parameters);
 	this.packetId = packetId;

@@ -11,5 +11,5 @@ Because this works on the client side there are some limitations:
 * Fill in form and press the blue button
 * Validate response packet parameters with BANK_CERT(in js/scripts.js)
 
-## Update: 21.07.12
-Currently only SEB(or possibly other IPizza banks) 4001 request and 3002 response works.
+## Update: 22.07.12
+Currently only Swedbank(or possibly other IPizza banks) 4001 request and 3002 response works.
