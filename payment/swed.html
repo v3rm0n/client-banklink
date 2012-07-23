@@ -38,25 +38,35 @@
 				else{
 					$("#sum").html(request.getParam("VK_AMOUNT"));
 				}
+				function addInfoToForm(response){
+					$("#bankForm").attr("action", request.getParam("VK_RETURN"));
+					$("#bankForm").attr("method", (getUrlParam('USE_GET') == undefined ? "POST":"GET"));
+					$.each(response.parameters, function(i,param){
+						$("<input />").attr("type", "hidden")
+						    .attr("name", param.name)
+						    .attr("value", param.value)
+						    .appendTo('#bankForm');
+				    	});
+				} 
 				//Ordinary payment response
 				$("#payButton").click(function(){
 					var response = request.response(true,false);
 					$("#bankForm").attr("target", "_self"); 
-					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					addInfoToForm(response);
 					$("#bankForm").submit();
 				});
 				//Payment auto response
 				$("#autoButton").click(function(){
 						var response = request.response(true,true);
 						$("#bankForm").attr("target", "_blank"); 
-						$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+						addInfoToForm(response);
 						$("#bankForm").submit();
 				});
 				//Payment failed response
 				$("#cancelButton").click(function(){
 					var response = request.response(false,false);
 					$("#bankForm").attr("target", "_self"); 
-					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					addInfoToForm(response);
 					$("#bankForm").submit();
 				});
 				$('.btn-tooltip').tooltip();
@@ -68,7 +78,7 @@
 			<div class="row-fluid">
 				<div class="span4">&nbsp;</div>
 				<div class="span4">
-					<form id="bankForm" class="form-horizontal" method="POST">
+					<form id="bankForm" class="form-horizontal">
 						<fieldset>
 							<legend>Swedbanki makse <a href="#paramsModal" data-toggle="modal" class="btn btn-inverse btn-mini">Parameetrid</a></legend>
 							<div class="control-group">
