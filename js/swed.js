@@ -31,6 +31,7 @@ Packet4001.prototype.response = function(firstName, lastName, idCode){
 	response.setParam("VK_LANG", this.getParam("VK_LANG"));
 	response.setParam("VK_ENCODING", this.getParam("VK_ENCODING"));
 	response.setParam("VK_INFO", INFO_FORMAT.format(idCode, firstName, lastName));
+	response.sign();
 	return response;
 }
 //Authentication response 3002
@@ -80,6 +81,7 @@ Packet4002.prototype.response = function(firstName, lastName, idCode){
 	response.setParam("VK_LANG", this.getParam("VK_LANG"));
 	response.setParam("VK_ENCODING", this.getParam("VK_ENCODING"));
 	response.setParam("VK_INFO", INFO_FORMAT.format(idCode, firstName, lastName));
+	response.sign();
 	return response;
 }
 //Authentication response 3002
@@ -145,6 +147,7 @@ Packet1001.prototype.response = function(success, auto){
 		response.setParam("VK_LANG", this.getParam("VK_LANG"));
 		response.setParam("VK_AUTO", auto ? "Y":"N");
 		response.setParam("VK_ENCODING", this.getParam("VK_ENCODING"));
+		response.sign();
 		return response;
 	}
 	else {

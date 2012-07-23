@@ -40,7 +40,7 @@
 					var min = now.getMinutes();
 					var s = now.getSeconds();
 					request.setParam("VK_TIME",(h<10?"0"+h:h)+":"+(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
-					$(this).attr("href", "auth/swed.html"+request.queryString());
+					$(this).attr("href", "auth/swed.html"+request.queryString()+"USE_GET=Y");
 				});
 				$("#paymentBtn").click(function(){
 					//Create new payment request packet
@@ -48,7 +48,7 @@
 					request.setParam("VK_SND_ID","TEST");
 					request.setParam("VK_RETURN","../index.html");
 					request.setParam("VK_AMOUNT", $("#amount").val());
-					$(this).attr("href", "payment/swed.html"+request.queryString());
+					$(this).attr("href", "payment/swed.html"+request.queryString()+"USE_GET=Y");
 				});
 				//Read packet from request
 				response = Packet.init();

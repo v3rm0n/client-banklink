@@ -37,7 +37,18 @@
 				}
 				$("#bankForm").submit(function(){
 					var response = request.response($("#firstname").val(),$("#lastname").val(),$("#idcode").val());
-					$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					if(getUrlParam('USE_GET') == undefined){
+						$.each(response.parameters, function(i,param){
+							$("<input />").attr("type", "hidden")
+							    .attr("name", param.name)
+							    .attr("value", param.value)
+							    .appendTo('#bankForm');
+						    });
+						$("#bankForm").attr("action", request.getParam("VK_RETURN"));
+					}
+					else {
+						$("#bankForm").attr("action", request.getParam("VK_RETURN")+response.queryString());
+					}
 				});
 			});
 		</script>

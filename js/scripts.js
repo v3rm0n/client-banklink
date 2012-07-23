@@ -10,6 +10,21 @@ String.prototype.format = function() {
     ;
   });
 };
+getUrlParams = function(){
+	var urlParams = {};
+	var	match,
+		pl     = /\+/g,  // Regex for replacing addition symbol with a space
+		search = /([^&=]+)=?([^&]*)/g,
+		decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+		query  = window.location.search.substring(1);
+	while (match = search.exec(query))
+		urlParams[decode(match[1])] = decode(match[2]);
+	return urlParams;
+}
+getUrlParam = function(name){
+	var urlParams = getUrlParams();
+	return urlParams[name];
+}
 //Classes
 //Packet
 function Packet(packetId, parameters){
@@ -98,14 +113,7 @@ Packet.prototype.queryString = function(){
 	return query;
 }
 Packet.init = function(){
-	var urlParams = {};
-    	var	match,
-		pl     = /\+/g,  // Regex for replacing addition symbol with a space
-		search = /([^&=]+)=?([^&]*)/g,
-		decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-		query  = window.location.search.substring(1);
-	while (match = search.exec(query))
-		urlParams[decode(match[1])] = decode(match[2]);
+	var urlParams = getUrlParams();
 	var packet;
 	if(urlParams["VK_SERVICE"] != undefined){
 		eval("packet = new Packet"+urlParams["VK_SERVICE"]+"();");
