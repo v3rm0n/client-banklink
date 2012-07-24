@@ -2,7 +2,7 @@
 //Common variables
 var SND_ID = "HP";
 //Authentication services
-var INFO_FORMAT = "ISIK:{0};NIMI:{1} , {2}";
+var INFO_FORMAT = "ISIK:{0};NIMI:{1} {2}";
 //Authentication request 4001
 Packet4001.prototype = new RequestPacket();
 Packet4001.prototype.constructor = Packet4001;
