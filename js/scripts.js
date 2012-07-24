@@ -60,7 +60,6 @@ Packet.prototype.toMac = function(){
 		return str;
 	}
 	var macString = "";
-	//TODO: sort parameters according to order
 	for(i=0;i<this.parameters.length;i++){
 		var param = this.parameters[i];
 		if(param.order != 0){
@@ -82,7 +81,7 @@ Packet.prototype.sign = function(){
 	rsa.readPrivateKeyFromPEMString(MERCHANT_PRIVATE_KEY);
 	var signature = rsa.signString(this.toMac(), "sha1");
 	var b64 = hex2b64(signature);
-	this.setParam("VK_MAC", encodeURIComponent(b64));
+	this.setParam("VK_MAC", b64);
 }
 //Verifiy request parameters
 Packet.prototype.verify = function(){
@@ -108,7 +107,7 @@ Packet.prototype.queryString = function(){
 	var query = "?";
 	for(i=0;i<this.parameters.length;i++){
 		var param = this.parameters[i];
-		query += param.name+"="+param.value+"&";
+		query += param.name+"="+encodeURIComponent(param.value)+"&";
 	}
 	return query;
 }
