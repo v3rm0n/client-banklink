@@ -165,6 +165,54 @@ function PacketParameter(name, length, order, value){
 	this.order = order || 0;
 	this.value = value || "";
 }
+//AuthHistory
+function AuthHistory(history){
+	this.history = history || [];
+}
+AuthHistory.prototype.isEmpty = function() {
+	return this.history.length == 0;
+}
+AuthHistory.prototype.contains = function(id) {
+	var found = false;
+	$.each(this.history, function(i,item){
+		if(item.id == id){
+			found = true;
+			return (false);
+		}
+	});
+	return found;
+}
+AuthHistory.prototype.add = function(id, firstName, lastName) {
+	if(!this.contains(id)){
+		this.history.push({id: id, firstName: firstName, lastName: lastName});
+		localStorage.setItem("history", JSON.stringify(this.history));
+	}
+}
+AuthHistory.prototype.get = function(id){
+	var found = null;
+	$.each(this.history, function(i,item){
+		if(item.id == id){
+			found = item;
+			return (false);
+		}
+	});
+	return found;
+}
+AuthHistory.prototype.asSelect = function() {
+	if(this.isEmpty()){
+		return "";
+	}
+	var select = "<select>";
+	$.each(this.history, function(i,item){
+		select += "<option value='"+item.id+"'>"+item.firstName+" "+item.lastName+"</option>"
+	});
+	select += "</select>";
+	return select;
+}
+AuthHistory.init = function(){
+	var history = $.parseJSON(localStorage.getItem("history"));
+	return new AuthHistory(history);
+}
 //Certs and keys
 var MERCHANT_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\
 MIICWwIBAAKBgQDRhGF7X4A0ZVlEg594WmODVVUIiiPQs04aLmvfg8SborHss5gQ\
