@@ -1,6 +1,8 @@
 //Predefined bank link packets according to Swedbank specifications
 //Common variables
 var SND_ID = "HP";
+var SND_ACC = "22101234567";
+var SND_NAME = "Maksja Nimi";
 //Authentication services
 var INFO_FORMAT = "ISIK:{0};NIMI:{1} {2}";
 //Authentication request 4001
@@ -25,6 +27,7 @@ function Packet4001(){
 }
 Packet4001.prototype.response = function(firstName, lastName, idCode){
 	var response = new Packet3002();
+	//TODO: VK_DATE and VK_TIME should be generated not read from request
 	response.setParam("VK_DATE", this.getParam("VK_DATE"));
 	response.setParam("VK_TIME", this.getParam("VK_TIME"));
 	response.setParam("VK_SND_ID", SND_ID);
@@ -134,13 +137,13 @@ Packet1001.prototype.response = function(success, auto){
 		response.setParam("VK_SND_ID", SND_ID);
 		response.setParam("VK_REC_ID", this.getParam("VK_SND_ID"));
 		response.setParam("VK_STAMP", this.getParam("VK_STAMP"));
-		//VK_T_NO
+		//VK_T_NO maksekorralduse number
 		response.setParam("VK_AMOUNT", this.getParam("VK_AMOUNT"));
 		response.setParam("VK_CURR", this.getParam("VK_CURR"));
 		response.setParam("VK_REC_ACC", this.getParam("VK_ACC"));
 		response.setParam("VK_REC_NAME", this.getParam("VK_NAME"));
-		//VK_SND_ACC
-		//VK_SND_NAME
+		response.setParam("VK_SND_ACC", SND_ACC);
+		response.setParam("VK_SND_NAME", SND_NAME);
 		response.setParam("VK_REF", this.getParam("VK_REF"));
 		response.setParam("VK_MSG", this.getParam("VK_MSG"));
 		//VK_T_DATE
