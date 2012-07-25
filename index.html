@@ -32,14 +32,8 @@
 					request.setParam("VK_SND_ID","TEST");
 					request.setParam("VK_RETURN","../index.html");
 					var now = new Date();
-					var d = now.getDate();
-					var m = now.getMonth()+1;
-					var y = now.getFullYear();
-					request.setParam("VK_DATE",(d<10?"0"+d:d)+"."+(m<10?"0"+m:m)+"."+y);
-					var h = now.getHours();
-					var min = now.getMinutes();
-					var s = now.getSeconds();
-					request.setParam("VK_TIME",(h<10?"0"+h:h)+":"+(min<10?"0"+min:min)+":"+(s<10?"0"+s:s));
+					request.setParam("VK_DATE",now.formatDate("{0}.{1}.{2}"));
+					request.setParam("VK_TIME",now.formatTime("{0}:{1}:{2}"));
 					$(this).attr("href", "auth/swed.html"+request.queryString()+"USE_GET=Y");
 				});
 				$("#paymentBtn").click(function(){

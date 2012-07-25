@@ -10,6 +10,21 @@ String.prototype.format = function() {
     ;
   });
 };
+//Time and date format functions
+//Example new Date().formatDate("{0}.{1}.{2}"); -> "24.07.2012"
+Date.prototype.formatDate = function(format){
+	var d = this.getDate();
+	var m = this.getMonth()+1;
+	var y = this.getFullYear();
+	return format.format((d<10?"0"+d:d),(m<10?"0"+m:m),y);
+}
+//Example new Date().formatTime("{0}:{1}:{2}") -> "12:48:55"
+Date.prototype.formatTime = function(format){
+	var h = this.getHours();
+	var min = this.getMinutes();
+	var s = this.getSeconds();
+	return format.format((h<10?"0"+h:h),(min<10?"0"+min:min),(s<10?"0"+s:s));
+}
 getUrlParams = function(){
 	var urlParams = {};
 	var	match,
