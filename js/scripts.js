@@ -56,10 +56,10 @@ Packet.prototype.setParam = function(paramName, paramValue){
 				param.value = $.trim(paramValue);
 				return;
 			}
-			alert("Parameter "+param.name+" value too long!["+paramValue.length+","+param.length+"]");
+			throw new RangeError("Parameter "+param.name+" value too long!["+paramValue.length+","+param.length+"]");
 		}
 	}
-	alert("Parameter "+paramName+" doesn't exist!");
+	throw new ParameterError("Parameter "+paramName+" doesn't exist!");
 }
 Packet.prototype.getParam = function(paramName){
 	for(i=0;i<this.parameters.length;i++){
@@ -67,7 +67,7 @@ Packet.prototype.getParam = function(paramName){
 			return this.parameters[i].value;
 		}
 	}
-	alert("Parameter "+paramName+" doesn't exist!");
+	throw new ParameterError("Parameter "+paramName+" doesn't exist!");
 }
 Packet.prototype.toMac = function(){
 	function pad(length){
@@ -87,10 +87,10 @@ Packet.prototype.toMac = function(){
 }
 //"Abstract" methods
 Packet.prototype.privateKey = function(){
-	alert("Not implemented!");
+	throw new NotImplementedError("Packet.privateKey");
 }
 Packet.prototype.certificate = function(){
-	alert("Not implemented!");
+	throw new NotImplementedError("Packet.certificate");
 }
 //Sign parameters and return URL
 Packet.prototype.sign = function(){
@@ -158,8 +158,8 @@ RequestPacket.prototype.certificate = function(){
 	return BANK_CERT;
 }
 //"Abstract" functions
-RequestPacket.prototype.response = function(firstName, lastName, idCode){
-	alert("Not implemented!");
+RequestPacket.prototype.response = function(){
+	throw new NotImplementedError("RequestPacket.response");
 }
 //Response packet
 ResponsePacket.prototype = new Packet();
@@ -181,6 +181,20 @@ function PacketParameter(name, length, order, value){
 	this.length = length;
 	this.order = order || 0;
 	this.value = value || "";
+}
+//Errors
+ParameterError.prototype = new Error();
+ParameterError.prototype.constructor = ParameterError;
+function ParameterError(message){
+	Error.call(message);
+	this.message = message;
+}
+NotImplementedError.prototype = new Error();
+NotImplementedError.prototype.constructor = NotImplementedError;
+function NotImplementedError(method){
+	var message = "Method "+method+" not implemented!";
+	Error.call(message);
+	this.message = message;
 }
 //Certs and keys
 var MERCHANT_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\
