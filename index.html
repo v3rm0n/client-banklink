@@ -51,6 +51,9 @@
 						if(response instanceof Packet1101){
 							alert("Makse õnnestus summas "+response.getParam("VK_AMOUNT"));
 						}
+						if(response instanceof Packet1901){
+							alert("Makse ebaõnnestus!");
+						}
 						else{
 							alert("Tere tulemast "+response.getParam("VK_INFO"));
 						}
