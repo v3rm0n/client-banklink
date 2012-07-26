@@ -27,10 +27,11 @@ function Packet4001(){
 }
 Packet4001.prototype.response = function(firstName, lastName, idCode){
 	var response = new Packet3002();
-	//TODO: VK_DATE and VK_TIME should be generated not read from request
-	response.setParam("VK_DATE", this.getParam("VK_DATE"));
-	response.setParam("VK_TIME", this.getParam("VK_TIME"));
-	response.setParam("VK_SND_ID", SND_ID);
+	var now = new Date();
+	response.setParam("VK_DATE", now.formatDate());
+	response.setParam("VK_TIME", now.formatTime());
+	response.setParam("VK_SND_ID", Swedbank.SND_ID);
+	response.setParam("VK_USER", Swedbank.USER);
 	response.setParam("VK_LANG", this.getParam("VK_LANG"));
 	response.setParam("VK_ENCODING", this.getParam("VK_ENCODING"));
 	response.setParam("VK_INFO", INFO_FORMAT.format(idCode, firstName, lastName));
@@ -146,7 +147,8 @@ Packet1001.prototype.response = function(success, auto){
 		response.setParam("VK_SND_NAME", SND_NAME);
 		response.setParam("VK_REF", this.getParam("VK_REF"));
 		response.setParam("VK_MSG", this.getParam("VK_MSG"));
-		//VK_T_DATE
+		var now = new Date();
+		response.setParam("VK_T_DATE", now.formatDate());
 		response.setParam("VK_LANG", this.getParam("VK_LANG"));
 		response.setParam("VK_AUTO", auto ? "Y":"N");
 		response.setParam("VK_ENCODING", this.getParam("VK_ENCODING"));
