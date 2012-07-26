@@ -35,6 +35,8 @@
 				if(!request.verify()){
 					$("#bankForm").append("<div class='alert alert-error'>Verification failed!</div>");
 				}
+				//Init AuthHistory object
+				authHistory = AuthHistory.init();
 				$("#bankForm").submit(function(){
 					var response = request.response($("#firstname").val(),$("#lastname").val(),$("#idcode").val());
 					$("#bankForm").attr("method", (getUrlParam('USE_GET') == undefined ? "POST":"GET"));
@@ -45,7 +47,25 @@
 						    .appendTo('#bankForm');
 					    });
 					$("#bankForm").attr("action", request.getParam("VK_RETURN"));
+					authHistory.add($("#idcode").val(),$("#firstname").val(),$("#lastname").val());
 				});
+				if(!authHistory.isEmpty()){
+					var idchoose = $("<div class='control-group'>\
+						<label class='control-label' for='idChooseSelect'>Ajalugu</label>\
+							<div class='controls' id='idChoose'>\
+								<p class='help-block'>Vali olemasolev</p>\
+							</div>\
+						</div>");
+					idchoose.insertAfter($("legend"));
+					var historySelect = $(authHistory.asSelect());
+					$("#idChoose").prepend(historySelect);
+					historySelect.click(function(){
+						var selected = authHistory.get($(this).val());
+						$("#idcode").val(selected.id);
+						$("#firstname").val(selected.firstName);
+						$("#lastname").val(selected.lastName);
+					});
+				}
 			});
 		</script>
 	</head>
