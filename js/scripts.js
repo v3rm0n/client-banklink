@@ -195,6 +195,7 @@ function NotImplementedError(method){
 	var message = "Method "+method+" not implemented!";
 	Error.call(message);
 	this.message = message;
+}
 //AuthHistory
 function AuthHistory(history){
 	this.history = history || [];
