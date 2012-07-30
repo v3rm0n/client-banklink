@@ -27,6 +27,7 @@ Date.prototype.formatTime = function(format){
 	var s = this.getSeconds();
 	return format.format((h<10?"0"+h:h),(min<10?"0"+min:min),(s<10?"0"+s:s));
 }
+//Read all params from URL
 getUrlParams = function(){
 	var urlParams = {};
 	var	match,
@@ -38,16 +39,20 @@ getUrlParams = function(){
 		urlParams[decode(match[1])] = decode(match[2]);
 	return urlParams;
 }
+// Read one param from url
 getUrlParam = function(name){
 	var urlParams = getUrlParams();
 	return urlParams[name];
 }
 //Classes
 //Packet
+//Represents all the parameters that are exchanged by bank and merchant
 function Packet(packetId, parameters){
+	//TODO: make packetId and parameters "private"
 	this.packetId = packetId;
 	this.parameters = parameters || [];
 }
+//Sets specified parameter value
 Packet.prototype.setParam = function(paramName, paramValue){
 	for(i=0;i<this.parameters.length;i++){
 		var param = this.parameters[i];
@@ -61,6 +66,7 @@ Packet.prototype.setParam = function(paramName, paramValue){
 	}
 	throw new ParameterError("Parameter "+paramName+" doesn't exist!");
 }
+//Gets specified parameter value
 Packet.prototype.getParam = function(paramName){
 	for(i=0;i<this.parameters.length;i++){
 		if(this.parameters[i].name == paramName){
@@ -69,6 +75,8 @@ Packet.prototype.getParam = function(paramName){
 	}
 	throw new ParameterError("Parameter "+paramName+" doesn't exist!");
 }
+//Generates MAC string according to 008 algorithm specified in IPizza spec
+//TODO: Nordea has its own algorithm so 008 doesn't belong in a common superclass
 Packet.prototype.toMac = function(){
 	function pad(length){
     	var str = '' + length;
@@ -86,16 +94,18 @@ Packet.prototype.toMac = function(){
 	return macString;
 }
 //"Abstract" methods
+//Returns packet private key
 Packet.prototype.privateKey = function(){
 	throw new NotImplementedError("Packet.privateKey");
 }
+//Returns packet certificate
 Packet.prototype.certificate = function(){
 	throw new NotImplementedError("Packet.certificate");
 }
 //Sign parameters and return URL
 Packet.prototype.sign = function(){
 	var rsa = new RSAKey();
-	rsa.readPrivateKeyFromPEMString(MERCHANT_PRIVATE_KEY);
+	rsa.readPrivateKeyFromPEMString(this.privateKey());
 	var signature = rsa.signString(this.toMac(), "sha1");
 	var b64 = hex2b64(signature);
 	this.setParam("VK_MAC", b64);
@@ -103,11 +113,12 @@ Packet.prototype.sign = function(){
 //Verifiy request parameters
 Packet.prototype.verify = function(){
 	var x509 = new X509();
-	x509.readCertPEM(MERCHANT_CERT);
+	x509.readCertPEM(this.certificate());
 	var mac = decodeURIComponent(this.getParam("VK_MAC"));
 	var signature = b64tohex(mac);
 	return x509.subjectPublicKeyRSA.verifyString(this.toMac(), signature);
 }
+//Generate table for displaying all parameters
 Packet.prototype.html = function(){
 	var result = "<table class='table table-bordered table-striped'><thead><tr><th>Parameeter</th><th>Väärtus</th></tr></thead><tbody>";
 	for(i=0;i<this.parameters.length;i++){
@@ -119,6 +130,7 @@ Packet.prototype.html = function(){
 	result += "</tbody></table>";
 	return	result;
 }
+//Generate query string with all packet parameters
 Packet.prototype.queryString = function(){
 	this.sign();
 	var query = "?";
@@ -128,6 +140,7 @@ Packet.prototype.queryString = function(){
 	}
 	return query;
 }
+//Initialize packet from request
 Packet.init = function(){
 	var urlParams = getUrlParams();
 	var packet;
@@ -144,6 +157,7 @@ Packet.init = function(){
 	return packet;
 }
 //RequestPacket
+//Represents a packet that is sent from a merchant to the bank
 RequestPacket.prototype = new Packet();
 RequestPacket.prototype.constructor = RequestPacket;
 function RequestPacket(packetId,parameters){
@@ -151,17 +165,22 @@ function RequestPacket(packetId,parameters){
 	this.packetId = packetId;
 	this.parameters = parameters || [];
 }
+//Request private key is used when signing request packet
+//Only useful internally for testing
 RequestPacket.prototype.privateKey = function(){
-	return BANK_PRIVATE_KEY;
+	return MERCHANT_PRIVATE_KEY;
 }
+//Request certificate is used to verify request
 RequestPacket.prototype.certificate = function(){
-	return BANK_CERT;
+	return MERCHANT_CERT;
 }
 //"Abstract" functions
+//Returns a corresponding response packet for this request packet
 RequestPacket.prototype.response = function(){
 	throw new NotImplementedError("RequestPacket.response");
 }
 //Response packet
+//Represents a packet that is sent from the bank to a merchant
 ResponsePacket.prototype = new Packet();
 ResponsePacket.prototype.constructor = ResponsePacket;
 function ResponsePacket(packetId, parameters){
@@ -169,11 +188,14 @@ function ResponsePacket(packetId, parameters){
 	this.packetId = packetId;
 	this.parameters = parameters || [];
 }
+//Response private key is used when signing response packet
 ResponsePacket.prototype.privateKey = function(){
-	return MERCHANT_PRIVATE_KEY;
+	return BANK_PRIVATE_KEY;
 }
+//Response certificate is used to verify response
+//Only useful internally for testing
 ResponsePacket.prototype.certificate = function(){
-	return MERCHANT_CERT;
+	return BANK_CERT;
 }
 //PacketParameter
 function PacketParameter(name, length, order, value){
@@ -183,12 +205,16 @@ function PacketParameter(name, length, order, value){
 	this.value = value || "";
 }
 //Errors
+//ParameterError
+//Thrown when there is something wrong with the parameter
 ParameterError.prototype = new Error();
 ParameterError.prototype.constructor = ParameterError;
 function ParameterError(message){
 	Error.call(message);
 	this.message = message;
 }
+//NotImplementedError
+//Thrown when a method is not implemented
 NotImplementedError.prototype = new Error();
 NotImplementedError.prototype.constructor = NotImplementedError;
 function NotImplementedError(method){
@@ -197,9 +223,11 @@ function NotImplementedError(method){
 	this.message = message;
 }
 //AuthHistory
+//Used to keep history of used authentications
 function AuthHistory(history){
 	this.history = history || [];
 }
+//Checks if history is empty
 AuthHistory.prototype.isEmpty = function() {
 	return this.history.length == 0;
 }
@@ -229,6 +257,7 @@ AuthHistory.prototype.get = function(id){
 	});
 	return found;
 }
+//Generates a select box of used authentications
 AuthHistory.prototype.asSelect = function() {
 	if(this.isEmpty()){
 		return "";
@@ -240,8 +269,10 @@ AuthHistory.prototype.asSelect = function() {
 	select += "</select>";
 	return select;
 }
+//Initializes auth history object
 AuthHistory.init = function(){
-	var history = $.parseJSON(localStorage.getItem("history"));
+	(localStorage != undefined)
+		var history = $.parseJSON(localStorage.getItem("history")) || [];
 	return new AuthHistory(history);
 }
 //Certs and keys
