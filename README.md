@@ -1,4 +1,6 @@
 # Client Banklink
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fv3rm0n%2Fclient-banklink.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fv3rm0n%2Fclient-banklink?ref=badge_shield)
+
 This is a simple JS implementation of IPizza banklink for testing your web application.
 Because this works on the client side there are some limitations:
 * Only GET is supported.
@@ -15,3 +17,7 @@ Because this works on the client side there are some limitations:
 
 ## Update: 22.07.12
 Currently only Swedbank(or possibly other IPizza banks) works. Not much validation of parameters is done.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fv3rm0n%2Fclient-banklink.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fv3rm0n%2Fclient-banklink?ref=badge_large)
